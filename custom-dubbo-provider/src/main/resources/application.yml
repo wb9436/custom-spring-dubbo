@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+dubbo:
+  host: 127.0.0.1
+  port: 20880
+  register-host: 127.0.0.1
+  register-port: 6379
+
