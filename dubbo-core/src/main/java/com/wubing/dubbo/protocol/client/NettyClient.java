@@ -1,6 +1,5 @@
 package com.wubing.dubbo.protocol.client;
 
-import com.wubing.dubbo.protocol.messge.MessageQueue;
 import com.wubing.dubbo.protocol.messge.MessagePromise;
 import com.wubing.dubbo.protocol.messge.RequestMessage;
 import io.netty.bootstrap.Bootstrap;
@@ -62,22 +61,17 @@ public class NettyClient {
     public static Object sendMessage(RequestMessage message) {
         MessagePromise promise = new MessagePromise(message.getMessageId());
         try {
-            MessageQueue.put(promise);
             channel.writeAndFlush(message);
             //阻塞等待响应
             promise.waiting();
             //判断请求结果
             if (promise.isSuccess()) {
                 return promise.getResult();
-            } else if (promise.isTimeout()) {
-                throw new RuntimeException("请求超时！");
             } else {
-                throw new RuntimeException(promise.getException());
+                throw new RuntimeException(promise.getFailure());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            MessageQueue.clean(promise);
         }
     }
 

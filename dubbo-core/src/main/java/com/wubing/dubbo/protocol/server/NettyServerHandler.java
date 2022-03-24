@@ -1,9 +1,8 @@
 package com.wubing.dubbo.protocol.server;
 
-import com.wubing.dubbo.support.proxy.ServiceProxyFactory;
 import com.wubing.dubbo.protocol.messge.RequestMessage;
 import com.wubing.dubbo.protocol.messge.ResponseMessage;
-import com.wubing.dubbo.protocol.messge.ResultType;
+import com.wubing.dubbo.support.proxy.ServiceProxyFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.logging.Log;
@@ -32,14 +31,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             Method method = clazz.getMethod(message.getMethodName(), message.getParameterTypes());
             Object instance = ServiceProxyFactory.getBean(clazz);
             Object result = method.invoke(instance, message.getParameterValues());
-
-            respMessage.setResultType(ResultType.SUCCESS.ordinal());
             respMessage.setResult(result);
         } catch (Exception e) {
             e.printStackTrace();
-
-            respMessage.setResultType(ResultType.FAILURE.ordinal());
-            respMessage.setResult(e);
+            respMessage.setFailure(e);
         }
         ctx.writeAndFlush(respMessage);
     }

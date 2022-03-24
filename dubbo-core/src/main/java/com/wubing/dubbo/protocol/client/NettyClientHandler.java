@@ -1,6 +1,5 @@
 package com.wubing.dubbo.protocol.client;
 
-import com.wubing.dubbo.protocol.messge.MessageQueue;
 import com.wubing.dubbo.protocol.messge.MessagePromise;
 import com.wubing.dubbo.protocol.messge.ResponseMessage;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,18 +19,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ResponseMess
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ResponseMessage message) {
         logger.info("收到服务端响应：" + message);
-        int messageId = message.getMessageId();
-        MessagePromise promise = MessageQueue.get(messageId);
+        long messageId = message.getMessageId();
+        MessagePromise promise = MessagePromise.getPromise(messageId);
         if (promise != null) {
-            try {
-                if (message.isSuccess()) {
-                    promise.setResult(message.getResult());
-                } else {
-                    promise.setException((Exception) message.getResult());
-                }
-                promise.setResultType(message.getResultType());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (message.isSuccess()) {
+                promise.setResult(message.getResult());
+            } else {
+                promise.setFailure(message.getFailure());
             }
         }
     }

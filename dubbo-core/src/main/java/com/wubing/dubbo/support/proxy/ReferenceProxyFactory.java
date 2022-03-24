@@ -2,6 +2,7 @@ package com.wubing.dubbo.support.proxy;
 
 import com.wubing.dubbo.protocol.messge.RequestMessage;
 import com.wubing.dubbo.protocol.client.NettyClient;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.lang.reflect.Proxy;
  * @author: WB
  * @version: v1.0
  */
+@Slf4j
 public class ReferenceProxyFactory<T> {
     private static final ClassLoader classLoader = ReferenceProxyFactory.class.getClassLoader();
 
@@ -24,9 +26,12 @@ public class ReferenceProxyFactory<T> {
                 new InvocationHandler() {
                     @Override
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        long startTime = System.currentTimeMillis();
                         String className = referenceInterface.getName();
                         RequestMessage message = new RequestMessage(className, method.getName(), method.getParameterTypes(), args);
-                        return NettyClient.sendMessage(message);
+                        Object result = NettyClient.sendMessage(message);
+                        log.debug("本次请求：{}，共计耗时：{}ms", method.getName(), System.currentTimeMillis() - startTime);
+                        return result;
                     }
                 }
         );

@@ -9,24 +9,24 @@ import java.io.Serializable;
  * @version: v1.0
  */
 public class ResponseMessage implements Serializable {
-    private final int messageId;
-    private int resultType;
+    private final long messageId;
+    private Throwable failure;
     private Object result;
 
-    public ResponseMessage(int messageId) {
+    public ResponseMessage(long messageId) {
         this.messageId = messageId;
     }
 
-    public int getMessageId() {
+    public long getMessageId() {
         return messageId;
     }
 
-    public int getResultType() {
-        return resultType;
+    public Throwable getFailure() {
+        return failure;
     }
 
-    public void setResultType(int resultType) {
-        this.resultType = resultType;
+    public void setFailure(Throwable failure) {
+        this.failure = failure;
     }
 
     public Object getResult() {
@@ -38,14 +38,14 @@ public class ResponseMessage implements Serializable {
     }
 
     public boolean isSuccess() {
-        return resultType == ResultType.SUCCESS.ordinal();
+        return failure == null;
     }
 
     @Override
     public String toString() {
         return "ResponseMessage{" +
                 "messageId=" + messageId +
-                ", resultType=" + resultType +
+                ", failure=" + failure +
                 ", result=" + result +
                 '}';
     }

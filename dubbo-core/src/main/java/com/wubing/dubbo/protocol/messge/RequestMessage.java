@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @version: v1.0
  */
 public class RequestMessage implements Serializable {
-    private final int messageId;
+    private final long messageId;
     private String className;
     private String methodName;
     private Class<?>[] parameterTypes;
@@ -26,7 +26,7 @@ public class RequestMessage implements Serializable {
         this.parameterValues = parameterValues;
     }
 
-    public int getMessageId() {
+    public long getMessageId() {
         return messageId;
     }
 
