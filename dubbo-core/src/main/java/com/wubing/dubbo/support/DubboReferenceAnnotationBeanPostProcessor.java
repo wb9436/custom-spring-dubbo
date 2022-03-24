@@ -1,4 +1,4 @@
-package com.wubing.dubbo.support.processor;
+package com.wubing.dubbo.support;
 
 import com.wubing.dubbo.annotation.DubboReference;
 import org.springframework.beans.BeansException;

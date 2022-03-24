@@ -1,7 +1,7 @@
 package com.wubing.dubbo.annotation;
 
-import com.wubing.dubbo.marker.ConfigurationMarker;
-import com.wubing.dubbo.support.registrar.DubboServiceScannerRegistrar;
+import com.wubing.dubbo.support.marker.ConfigurationMarker;
+import com.wubing.dubbo.support.DubboServiceScannerRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;

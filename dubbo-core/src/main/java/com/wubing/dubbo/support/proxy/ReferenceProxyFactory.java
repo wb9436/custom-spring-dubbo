@@ -1,4 +1,4 @@
-package com.wubing.dubbo.support.factory;
+package com.wubing.dubbo.support.proxy;
 
 import com.wubing.dubbo.protocol.messge.RequestMessage;
 import com.wubing.dubbo.protocol.client.NettyClient;

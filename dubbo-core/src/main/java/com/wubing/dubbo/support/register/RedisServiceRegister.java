@@ -1,4 +1,4 @@
-package com.wubing.dubbo.support.registrar;
+package com.wubing.dubbo.support.register;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -9,7 +9,7 @@ import redis.clients.jedis.JedisPool;
  * @author: WB
  * @version: v1.0
  */
-public class RedisServiceRegistry {
+public class RedisServiceRegister {
     /**
      * Redis注册中心地址
      */
@@ -23,7 +23,7 @@ public class RedisServiceRegistry {
      */
     private static JedisPool jedisPool;
 
-    public RedisServiceRegistry(String host, int port) {
+    public RedisServiceRegister(String host, int port) {
         this.host = host;
         this.port = port;
         this.jedisPool = new JedisPool(host, port);

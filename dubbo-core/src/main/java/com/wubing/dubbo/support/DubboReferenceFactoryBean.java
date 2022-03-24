@@ -1,6 +1,6 @@
 package com.wubing.dubbo.support;
 
-import com.wubing.dubbo.support.factory.ReferenceProxyFactory;
+import com.wubing.dubbo.support.proxy.ReferenceProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 
 /**

@@ -1,6 +1,6 @@
 package com.wubing.dubbo.protocol.server;
 
-import com.wubing.dubbo.support.factory.ServiceProxyFactory;
+import com.wubing.dubbo.support.proxy.ServiceProxyFactory;
 import com.wubing.dubbo.protocol.messge.RequestMessage;
 import com.wubing.dubbo.protocol.messge.ResponseMessage;
 import com.wubing.dubbo.protocol.messge.ResultType;

@@ -1,4 +1,4 @@
-package com.wubing.dubbo.marker;
+package com.wubing.dubbo.support.marker;
 
 /**
  * 客户端标记

@@ -1,4 +1,4 @@
-package com.wubing.dubbo.support.factory;
+package com.wubing.dubbo.support.proxy;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

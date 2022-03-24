@@ -1,13 +1,13 @@
 package com.wubing.configuration;
 
-import com.wubing.dubbo.support.factory.ServiceProxyFactory;
-import com.wubing.dubbo.marker.ConfigurationMarker;
-import com.wubing.dubbo.marker.DubboClientMarker;
-import com.wubing.dubbo.marker.DubboServerMarker;
+import com.wubing.dubbo.support.proxy.ServiceProxyFactory;
+import com.wubing.dubbo.support.marker.ConfigurationMarker;
+import com.wubing.dubbo.support.marker.DubboClientMarker;
+import com.wubing.dubbo.support.marker.DubboServerMarker;
 import com.wubing.dubbo.protocol.client.NettyClient;
 import com.wubing.dubbo.protocol.server.NettyServer;
-import com.wubing.dubbo.support.processor.DubboReferenceAnnotationBeanPostProcessor;
-import com.wubing.dubbo.support.registrar.RedisServiceRegistry;
+import com.wubing.dubbo.support.DubboReferenceAnnotationBeanPostProcessor;
+import com.wubing.dubbo.support.register.RedisServiceRegister;
 import com.wubing.properties.DubboProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,8 +36,8 @@ public class DubboAutoConfiguration {
         }
 
         @Bean("redisClientRegister")
-        public RedisServiceRegistry redisClientRegister(DubboProperties dubboProperties) {
-            return new RedisServiceRegistry(dubboProperties.getRegisterHost(), dubboProperties.getRegisterPort());
+        public RedisServiceRegister redisClientRegister(DubboProperties dubboProperties) {
+            return new RedisServiceRegister(dubboProperties.getRegisterHost(), dubboProperties.getRegisterPort());
         }
 
         @Bean("dubboRpcClient")
@@ -52,8 +52,8 @@ public class DubboAutoConfiguration {
         }
 
         @Bean("redisServerRegister")
-        public RedisServiceRegistry redisServerRegister(DubboProperties dubboProperties) {
-            return new RedisServiceRegistry(dubboProperties.getRegisterHost(), dubboProperties.getRegisterPort());
+        public RedisServiceRegister redisServerRegister(DubboProperties dubboProperties) {
+            return new RedisServiceRegister(dubboProperties.getRegisterHost(), dubboProperties.getRegisterPort());
         }
 
         @Bean

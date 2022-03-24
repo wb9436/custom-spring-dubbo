@@ -1,11 +1,10 @@
-package com.wubing.dubbo.support.registrar;
+package com.wubing.dubbo.support;
 
 import com.wubing.dubbo.annotation.DubboReference;
 import com.wubing.dubbo.annotation.DubboService;
 import com.wubing.dubbo.annotation.EnableDubbo;
-import com.wubing.dubbo.support.DubboReferenceFactoryBean;
-import com.wubing.dubbo.marker.DubboClientMarker;
-import com.wubing.dubbo.marker.DubboServerMarker;
+import com.wubing.dubbo.support.marker.DubboClientMarker;
+import com.wubing.dubbo.support.marker.DubboServerMarker;
 import com.wubing.dubbo.util.BeanUtils;
 import com.wubing.dubbo.util.PathConverter;
 import org.springframework.beans.factory.config.BeanDefinition;
