@@ -16,6 +16,11 @@ import org.apache.commons.logging.LogFactory;
 public class NettyClientHandler extends SimpleChannelInboundHandler<ResponseMessage> {
     private static final Log logger = LogFactory.getLog(NettyClientHandler.class);
 
+    private NettyClient nettyClient;
+    public NettyClientHandler(NettyClient nettyClient) {
+        this.nettyClient = nettyClient;
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ResponseMessage message) {
         logger.info("收到服务端响应：" + message);
@@ -28,5 +33,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ResponseMess
                 promise.setFailure(message.getFailure());
             }
         }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        nettyClient.reconnect();
     }
 }

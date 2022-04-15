@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * 自动配置类
  *
@@ -40,9 +43,16 @@ public class DubboAutoConfiguration {
             return new RedisServiceRegister(dubboProperties.getRegisterHost(), dubboProperties.getRegisterPort());
         }
 
+        @Bean
+        public ExecutorService clientSingleExecutor() {
+            return Executors.newSingleThreadExecutor();
+        }
+
         @Bean("dubboRpcClient")
-        public NettyClient dubboRpcClient(DubboProperties dubboProperties) {
-            return new NettyClient(dubboProperties.getHost(), dubboProperties.getPort());
+        public NettyClient dubboRpcClient(DubboProperties dubboProperties, ExecutorService clientSingleExecutor) {
+            NettyClient nettyClient = new NettyClient(dubboProperties.getHost(), dubboProperties.getPort());
+            clientSingleExecutor.execute(nettyClient);
+            return nettyClient;
         }
     }
 
@@ -61,10 +71,17 @@ public class DubboAutoConfiguration {
             return new ServiceProxyFactory();
         }
 
+        @Bean
+        public ExecutorService serverSingleExecutor() {
+            return Executors.newSingleThreadExecutor();
+        }
+
         @Bean("dubboRpcServer")
         @DependsOn("redisServerRegister")
-        public NettyServer dubboRpcServer(DubboProperties dubboProperties) {
-            return new NettyServer(dubboProperties.getHost(), dubboProperties.getPort());
+        public NettyServer dubboRpcServer(DubboProperties dubboProperties, ExecutorService serverSingleExecutor) {
+            NettyServer nettyServer = new NettyServer(dubboProperties.getHost(), dubboProperties.getPort());
+            serverSingleExecutor.execute(nettyServer);
+            return nettyServer;
         }
     }
 

@@ -17,7 +17,7 @@ public class DubboProperties {
     /**
      * Netty Server Port
      */
-    private int port = 20880;
+    private Integer port = 20880;
     /**
      * Redis Register HostName
      */
@@ -36,11 +36,11 @@ public class DubboProperties {
         this.host = host;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 

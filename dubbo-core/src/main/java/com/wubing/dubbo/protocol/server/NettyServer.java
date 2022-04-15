@@ -21,50 +21,45 @@ import java.net.InetSocketAddress;
  * @author: WB
  * @version: v1.0
  */
-public class NettyServer {
+public class NettyServer implements Runnable {
     private static final Log logger = LogFactory.getLog(NettyServer.class);
     private static final ClassLoader CLASS_LOADER = NettyServer.class.getClassLoader();
-    private ChannelFuture channelFuture;
-    private NioEventLoopGroup boss;
 
-    public NettyServer(String host, int port) {
-        logger.info("NettyServer init ...");
+    private String host;
+    private Integer port;
 
-        this.init(host, port);
-        this.start();
+    public NettyServer(String host, Integer port) {
+        this.host = host;
+        this.port = port;
     }
 
-    private void init(String host, int port) {
-        boss = new NioEventLoopGroup();
-        channelFuture = new ServerBootstrap()
-                .group(boss)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.weakCachingResolver(CLASS_LOADER)));
-                        ch.pipeline().addLast(new ObjectEncoder());
-                        ch.pipeline().addLast(new NettyServerHandler());
-                    }
-                }).bind(new InetSocketAddress(host, port));
+    private void connect() {
+        NioEventLoopGroup boss = new NioEventLoopGroup();
+        NioEventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            ChannelFuture channelFuture = new ServerBootstrap()
+                    .group(boss, worker)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.weakCachingResolver(CLASS_LOADER)));
+                            ch.pipeline().addLast(new ObjectEncoder());
+                            ch.pipeline().addLast(new NettyServerHandler());
+                        }
+                    }).bind(new InetSocketAddress(host, port));
+
+            Channel channel = channelFuture.sync().channel();
+            logger.info("Netty Server启动成功：" + host + ":" + port);
+            channel.closeFuture().sync();
+        } catch (InterruptedException e) {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+        }
     }
 
-    public void start() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Channel channel = channelFuture.sync().channel();
-                    channel.closeFuture().sync();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (boss != null) {
-                        boss.shutdownGracefully();
-                    }
-                }
-            }
-        }).start();
+    @Override
+    public void run() {
+        connect();
     }
-
 }
