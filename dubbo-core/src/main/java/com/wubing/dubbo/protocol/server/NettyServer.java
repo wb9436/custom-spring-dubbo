@@ -10,9 +10,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 
 /**
@@ -21,12 +23,16 @@ import java.net.InetSocketAddress;
  * @author: WB
  * @version: v1.0
  */
+@Slf4j
 public class NettyServer implements Runnable {
     private static final Log logger = LogFactory.getLog(NettyServer.class);
     private static final ClassLoader CLASS_LOADER = NettyServer.class.getClassLoader();
 
     private String host;
     private Integer port;
+    private NioEventLoopGroup boss;
+    private NioEventLoopGroup worker;
+    private Channel channel;
 
     public NettyServer(String host, Integer port) {
         this.host = host;
@@ -34,8 +40,8 @@ public class NettyServer implements Runnable {
     }
 
     private void connect() {
-        NioEventLoopGroup boss = new NioEventLoopGroup();
-        NioEventLoopGroup worker = new NioEventLoopGroup();
+        boss = new NioEventLoopGroup();
+        worker = new NioEventLoopGroup();
         try {
             ChannelFuture channelFuture = new ServerBootstrap()
                     .group(boss, worker)
@@ -49,10 +55,13 @@ public class NettyServer implements Runnable {
                         }
                     }).bind(new InetSocketAddress(host, port));
 
-            Channel channel = channelFuture.sync().channel();
+            channel = channelFuture.sync().channel();
             logger.info("Netty Server启动成功：" + host + ":" + port);
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
+            if (channel != null) {
+                channel.close();
+            }
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
@@ -61,5 +70,16 @@ public class NettyServer implements Runnable {
     @Override
     public void run() {
         connect();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        log.info("Shutdown Netty Server...");
+        // 关闭连接
+        if (channel != null) {
+            channel.close();
+        }
+        // 释放资源
+        worker.shutdownGracefully();
     }
 }

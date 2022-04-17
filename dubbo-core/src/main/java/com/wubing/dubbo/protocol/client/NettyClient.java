@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
@@ -114,6 +115,17 @@ public class NettyClient implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PreDestroy
+    public void destroy() {
+        log.info("Shutdown Netty Client...");
+        // 关闭连接
+        if (channel != null) {
+            channel.close();
+        }
+        // 释放资源
+        worker.shutdownGracefully();
     }
 
 }
